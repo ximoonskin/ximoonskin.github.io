@@ -27,16 +27,16 @@
   /* 一、站内搜索（数据源：hexo-generator-searchdb 生成的 search.json）   */
   /* ------------------------------------------------------------------ */
 
-  var overlay = document.getElementById('local-search');
-  var input = document.getElementById('ls-input');
-  var panelBody = document.getElementById('ls-body');
-  var closeBtn = document.getElementById('ls-close');
-  var trigger = document.getElementById('local-search-btn');
+  var overlay = document.getElementById('xskin-search');
+  var input = document.getElementById('xskin-search-input');
+  var panelBody = document.getElementById('xskin-search-body');
+  var closeBtn = document.getElementById('xskin-search-close');
+  var trigger = document.getElementById('xskin-search-btn');
 
   if (overlay && input && panelBody) {
     var indexUrl = overlay.getAttribute('data-index') || '/search.json';
 
-    var HINT = '<p class="ls-hint">输入关键词后自动检索本站全部文章，支持标题、正文、标签与分类。</p>';
+    var HINT = '<p class="xs-hint">输入关键词后自动检索本站全部文章，支持标题、正文、标签与分类。</p>';
     var docs = null;
     var loading = false;
     var results = [];
@@ -76,7 +76,7 @@
       if (docs) return Promise.resolve(docs);
       if (loading) return Promise.resolve(null);
       loading = true;
-      panelBody.innerHTML = '<p class="ls-hint">正在加载搜索索引…</p>';
+      panelBody.innerHTML = '<p class="xs-hint">正在加载搜索索引…</p>';
 
       return fetch(indexUrl, { credentials: 'same-origin' })
         .then(function (res) {
@@ -91,7 +91,7 @@
         .catch(function () {
           docs = [];
           loading = false;
-          panelBody.innerHTML = '<p class="ls-empty">搜索索引加载失败，请确认已安装 hexo-generator-searchdb 并重新执行 <code>hexo clean &amp;&amp; hexo generate</code>。</p>';
+          panelBody.innerHTML = '<p class="xs-empty">搜索索引加载失败，请确认已安装 hexo-generator-searchdb 并重新执行 <code>hexo clean &amp;&amp; hexo generate</code>。</p>';
           return null;
         });
     }
@@ -113,22 +113,22 @@
       active = -1;
 
       if (!list.length) {
-        panelBody.innerHTML = '<p class="ls-empty">没有找到与 “' + esc(keyword) + '” 相关的内容。</p>';
+        panelBody.innerHTML = '<p class="xs-empty">没有找到与 “' + esc(keyword) + '” 相关的内容。</p>';
         return;
       }
 
-      var html = '<ul class="ls-list">';
+      var html = '<ul class="xs-list">';
 
       list.forEach(function (doc, i) {
         var meta = (doc.tags && doc.tags.length)
           ? doc.tags.join(' / ')
           : (doc.categories || []).join(' / ');
 
-        html += '<li class="ls-item" data-index="' + i + '">' +
-          '<a class="ls-link" href="' + esc(doc.url) + '">' +
-            '<span class="ls-title">' + highlight(esc(doc.title), keyword) + '</span>' +
-            (meta ? '<span class="ls-meta">' + esc(meta) + '</span>' : '') +
-            '<span class="ls-snippet">' + highlight(esc(snippet(doc.text, keyword)), keyword) + '</span>' +
+        html += '<li class="xs-item" data-index="' + i + '">' +
+          '<a class="xs-link" href="' + esc(doc.url) + '">' +
+            '<span class="xs-title">' + highlight(esc(doc.title), keyword) + '</span>' +
+            (meta ? '<span class="xs-meta">' + esc(meta) + '</span>' : '') +
+            '<span class="xs-snippet">' + highlight(esc(snippet(doc.text, keyword)), keyword) + '</span>' +
           '</a>' +
         '</li>';
       });
@@ -139,7 +139,7 @@
     }
 
     function setActive(index) {
-      var items = panelBody.querySelectorAll('.ls-item');
+      var items = panelBody.querySelectorAll('.xs-item');
       if (!items.length) return;
 
       if (index < 0) index = items.length - 1;
@@ -193,7 +193,7 @@
     function open() {
       overlay.classList.add('on');
       overlay.setAttribute('aria-hidden', 'false');
-      document.body.classList.add('ls-locked');
+      document.body.classList.add('xs-locked');
       input.focus();
 
       loadIndex().then(function () {
@@ -204,7 +204,7 @@
     function close() {
       overlay.classList.remove('on');
       overlay.setAttribute('aria-hidden', 'true');
-      document.body.classList.remove('ls-locked');
+      document.body.classList.remove('xs-locked');
       input.blur();
     }
 
@@ -257,13 +257,13 @@
       }
       if (e.key === 'Enter' && active > -1) {
         e.preventDefault();
-        var target = panelBody.querySelector('.ls-item.active .ls-link');
+        var target = panelBody.querySelector('.xs-item.active .xs-link');
         if (target) window.location.href = target.getAttribute('href');
       }
     });
 
     panelBody.addEventListener('mouseover', function (e) {
-      var item = e.target.closest && e.target.closest('.ls-item');
+      var item = e.target.closest && e.target.closest('.xs-item');
       if (item) setActive(Number(item.getAttribute('data-index')));
     });
   }
